@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Todo App</title>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="container">
+        <h1 class="heading">HACK/SLASH Todo App</h1>
+        <div class="todo-container">
+          <div id="loader" class="loader"></div>
+          <ul style="display: none" id="list">
+            <div class="todo-list empty-message">
+              <p>Your todo is currently empty, add a new item!</p>
+            </div>
+          </ul>
+        </div>
+        <form id="list-form" class="todo-add">
+          <input
+            class="todo-add-input"
+            type="text"
+            placeholder="Add new item..."
+            value=""
+          />
+        </form>
+      </div>
+    </div>
+    <script src="main.js"></script>
+  </body>
+</html>
