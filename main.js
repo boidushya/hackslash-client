@@ -12,12 +12,14 @@ const init = () => {
 
 // Strike through the item
 const strikeThrough = (e, id) => {
+  // Reflect changes to DOM
   e.parentElement.querySelector("span").classList.toggle("strike");
   TODO_ITEMS = TODO_ITEMS.map((item) =>
     item.id === id
       ? { id: item.id, value: item.value, checked: !item.checked }
       : item
   );
+  // Reflect changes to server
   fetch(`${API_URL}/check`, {
     method: "POST",
     headers: {
@@ -29,7 +31,9 @@ const strikeThrough = (e, id) => {
 
 // Delete item from the list
 const deleteItem = (id) => {
+  // Start animation for removal
   document.querySelector(`#todo-item-${id}`).classList.add("animate-exit");
+  // Remove item from DOM after animation ends
   setTimeout(() => {
     document.querySelector("#todo-item-" + id).remove();
     TODO_ITEMS = TODO_ITEMS.filter((item) => item.id !== id);
@@ -38,6 +42,7 @@ const deleteItem = (id) => {
       document.querySelector(".empty-message").style.display = "flex";
     }
   }, 200);
+  // Reflect changes to server
   fetch(`${API_URL}/delete`, {
     method: "DELETE",
     headers: {
@@ -50,9 +55,11 @@ const deleteItem = (id) => {
 // Edit item from the list
 
 const editItem = (id) => {
+  // Find the item
   const item = TODO_ITEMS.find((item) => item.id === id);
   const input = document.querySelector(`#todo-item-${id} .edit-input`);
   const span = document.querySelector(`#todo-item-${id} .todo-content`);
+  // Toggle the edit mode and if it is in edit mode, then update the value
   if (span.style.display === "none") {
     span.style.display = "inline-block";
     input.style.display = "none";
@@ -72,6 +79,7 @@ const editItem = (id) => {
               ? { id: item.id, value: e.target.value, checked: item.checked }
               : item
           );
+          // Reflect changes to server
           fetch(`${API_URL}/edit`, {
             method: "POST",
             headers: {
@@ -93,6 +101,7 @@ const editItem = (id) => {
         }
       }
     });
+    // If the user clicks outside the input box, then update the value
     input.addEventListener("blur", (e) => {
       input.style.display = "none";
       span.style.display = "inline-block";
@@ -103,6 +112,7 @@ const editItem = (id) => {
 
 // Add element to the DOM
 const addElementToDOM = (item) => {
+  // Create the list item and add to DOM
   let listHTMl = `<li class="todo-list" id="todo-item-${item.id}">
 			<label class="todo-label">
 				<input type="checkbox" onchange="strikeThrough(this,${item.id});" ${
@@ -132,6 +142,7 @@ const addElementToDOM = (item) => {
 
 // Add new item to the list
 const addNewItem = (e) => {
+  // If the user presses enter, then add the item to the list
   let val = e.querySelector("input").value;
   if (val.length) {
     addElementToDOM({ value: val, id: TODO_ITEMS.length + 1 });
@@ -142,18 +153,22 @@ const addNewItem = (e) => {
     });
     e.querySelector("input").value = "";
   }
+  // Remove empty list message
   if (document.querySelector(".empty-message")) {
     document.querySelector(".empty-message").style.display = "none";
   }
 
+  // Scroll to the bottom of the list on adding new item
   var elem = document.querySelector(".todo-container");
   elem.scrollTop = elem.scrollHeight;
 
+  // Start animation for entry
   document.querySelector("#list").lastChild.classList.add("animate-entry");
   setTimeout(() => {
     document.querySelector("#list").lastChild.classList.remove("animate-entry");
   }, 500);
 
+  // Reflect changes to server
   fetch(`${API_URL}/create`, {
     method: "PUT",
     headers: {
@@ -174,6 +189,7 @@ const addNewItem = (e) => {
 
 // Stuff to do when the page loads
 window.onload = () => {
+  // Get the list from the server and start event listeners
   init();
   fetch(`${API_URL}/notes`)
     .then((res) => res.json())
